@@ -1,0 +1,114 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(180deg, #0a0e27 0%, #1a1f3a 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.game-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameCanvas {
+    display: block;
+    background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 50%, #FFFFFF 100%);
+    border: 3px solid #8B4513;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(139, 69, 19, 0.95);
+    padding: 40px 60px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+    border: 3px solid #8B4513;
+    z-index: 10;
+}
+
+.screen.hidden {
+    display: none;
+}
+
+.screen h1 {
+    color: #FFD700;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.screen p {
+    color: #FFFFFF;
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+.button {
+    background: #DC143C;
+    color: #FFFFFF;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 10px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.button:hover {
+    background: #B22222;
+    transform: scale(1.05);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+}
+
+.button:active {
+    transform: scale(0.98);
+}
+
+.hud {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #FFFFFF;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    z-index: 5;
+}
+
+.hud.hidden {
+    display: none;
+}
+
+.score {
+    margin-bottom: 10px;
+}
+
+.powerup-indicator {
+    font-size: 0.9em;
+    color: #FFD700;
+    margin-top: 10px;
+}
+
+#highScore {
+    color: #FFD700;
+}
+

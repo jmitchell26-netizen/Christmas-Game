@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santa's Endless Flight</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- Start Screen -->
+        <div id="startScreen" class="screen">
+            <h1>🎅 Santa's Delivery Dash</h1>
+            <p>Hold ↑/Space to move up, Hold ↓ to move down</p>
+            <p>Press E to use ability | ←/→ to choose routes</p>
+            <p>Pilot your sleigh smoothly and avoid obstacles!</p>
+            <button id="startButton" class="button">Start Game</button>
+        </div>
+
+        <!-- Pause Screen -->
+        <div id="pauseScreen" class="screen hidden">
+            <h1>⏸ Paused</h1>
+            <button id="resumeButton" class="button">Resume</button>
+            <button id="restartButton" class="button">Restart</button>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="screen hidden">
+            <h1>🎄 Game Over!</h1>
+            <p>Score: <span id="finalScore">0</span></p>
+            <p>High Score: <span id="highScore">0</span></p>
+            <div id="goalsDisplay" style="margin: 20px 0; text-align: left; max-height: 200px; overflow-y: auto;"></div>
+            <button id="playAgainButton" class="button">Play Again</button>
+        </div>
+
+        <!-- HUD -->
+        <div id="hud" class="hud hidden">
+            <div class="score">Score: <span id="currentScore">0</span></div>
+            <div class="powerup-indicator" id="powerupIndicator"></div>
+        </div>
+    </div>
+
+    <script src="constants.js"></script>
+    <script src="gameState.js"></script>
+    <script src="player.js"></script>
+    <script src="obstacles.js"></script>
+    <script src="collectibles.js"></script>
+    <script src="routeManager.js"></script>
+    <script src="momentManager.js"></script>
+    <script src="abilityManager.js"></script>
+    <script src="goalsManager.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
+
