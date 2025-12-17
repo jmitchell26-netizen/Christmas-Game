@@ -83,6 +83,14 @@ body {
     transform: scale(0.98);
 }
 
+.button.secondary {
+    background: #228B22;
+}
+
+.button.secondary:hover {
+    background: #1a6b1a;
+}
+
 .hud {
     position: absolute;
     top: 20px;
@@ -110,5 +118,131 @@ body {
 
 #highScore {
     color: #FFD700;
+}
+
+/* Achievements Screen */
+.achievements-screen {
+    max-width: 700px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 30px 40px;
+}
+
+.achievements-screen h1 {
+    margin-bottom: 30px;
+}
+
+.achievements-section {
+    margin: 20px 0;
+    text-align: left;
+}
+
+.achievements-section h2 {
+    color: #FFD700;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #FFD700;
+    padding-bottom: 5px;
+}
+
+.achievements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.achievement-item {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #DC143C;
+    transition: all 0.3s;
+}
+
+.achievement-item.completed {
+    border-left-color: #90EE90;
+    background: rgba(144, 238, 144, 0.2);
+}
+
+.achievement-item:hover {
+    background: rgba(0, 0, 0, 0.5);
+    transform: translateX(5px);
+}
+
+.achievement-name {
+    color: #FFFFFF;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.achievement-progress {
+    color: #FFD700;
+    font-size: 0.9em;
+}
+
+.achievement-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.achievement-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #DC143C, #FFD700);
+    transition: width 0.3s;
+}
+
+.achievement-item.completed .achievement-progress-fill {
+    background: linear-gradient(90deg, #90EE90, #32CD32);
+}
+
+.unlockable-item {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 12px;
+    border-radius: 8px;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.unlockable-item.unlocked {
+    border: 2px solid #90EE90;
+    background: rgba(144, 238, 144, 0.2);
+}
+
+.unlockable-item.locked {
+    opacity: 0.5;
+    border: 2px solid #666;
+}
+
+.unlockable-icon {
+    font-size: 1.5em;
+}
+
+.unlockable-name {
+    color: #FFFFFF;
+    font-size: 1em;
+    flex: 1;
+}
+
+.unlockable-status {
+    font-size: 0.9em;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.unlockable-status.unlocked {
+    color: #90EE90;
+    background: rgba(144, 238, 144, 0.3);
+}
+
+.unlockable-status.locked {
+    color: #999;
+    background: rgba(100, 100, 100, 0.3);
 }
 

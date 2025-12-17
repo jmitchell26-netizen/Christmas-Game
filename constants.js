@@ -13,12 +13,12 @@ const GAME_CONFIG = {
     PLAYER_ACCELERATION: 0.15, // Smooth acceleration/deceleration
     
     // Obstacle settings
-    OBSTACLE_SPAWN_RATE: 0.02, // Probability per frame
-    OBSTACLE_MIN_SPAWN_INTERVAL: 60, // Minimum frames between spawns
+    OBSTACLE_SPAWN_RATE: 0.04, // Probability per frame (increased from 0.02)
+    OBSTACLE_MIN_SPAWN_INTERVAL: 30, // Minimum frames between spawns (reduced from 60)
     OBSTACLE_BASE_SPEED: 3,
     OBSTACLE_SPEED_INCREASE: 0.001, // Speed increase per frame
     
-    // Obstacle dimensions
+    // Obstacle dimensions (base sizes - will be varied)
     CHIMNEY_WIDTH: 50,
     CHIMNEY_HEIGHT: 80,
     SNOWMAN_WIDTH: 60,
@@ -27,6 +27,13 @@ const GAME_CONFIG = {
     TREE_HEIGHT: 100,
     CLOUD_WIDTH: 80,
     CLOUD_HEIGHT: 50,
+    
+    // Size variation ranges (multipliers)
+    OBSTACLE_SIZE_MIN: 0.7, // 70% of base size
+    OBSTACLE_SIZE_MAX: 1.4, // 140% of base size
+    
+    // Height variation for ground obstacles (offset from ground)
+    GROUND_OBSTACLE_HEIGHT_VARIATION: 100, // Can spawn up to 100px above ground
     
     // Collectible settings
     GIFT_SPAWN_RATE: 0.01,

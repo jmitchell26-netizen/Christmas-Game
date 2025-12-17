@@ -59,7 +59,7 @@ class ObstacleManager {
     }
     
     /**
-     * Update chimney - slowly rises vertically
+     * Update chimney - slowly rises vertically (scaled movement)
      */
     updateChimney(obstacle, frameCount) {
         if (!obstacle.startY) {
@@ -67,8 +67,9 @@ class ObstacleManager {
             obstacle.riseSpeed = 0.1;
         }
         
-        // Rise up and down in a sine wave pattern
-        obstacle.y = obstacle.startY + Math.sin(frameCount * 0.05 + obstacle.x * 0.01) * 15;
+        const scale = obstacle.sizeMultiplier || 1.0;
+        // Rise up and down in a sine wave pattern (scaled)
+        obstacle.y = obstacle.startY + Math.sin(frameCount * 0.05 + obstacle.x * 0.01) * 15 * scale;
         
         // Periodically emit soot clouds
         if (!obstacle.lastSootEmission) obstacle.lastSootEmission = 0;
@@ -123,78 +124,123 @@ class ObstacleManager {
     }
     
     /**
-     * Create a chimney obstacle
+     * Create a chimney obstacle with random size and height
      */
     createChimney() {
+        const sizeMultiplier = GAME_CONFIG.OBSTACLE_SIZE_MIN + 
+            Math.random() * (GAME_CONFIG.OBSTACLE_SIZE_MAX - GAME_CONFIG.OBSTACLE_SIZE_MIN);
+        const width = GAME_CONFIG.CHIMNEY_WIDTH * sizeMultiplier;
+        const height = GAME_CONFIG.CHIMNEY_HEIGHT * sizeMultiplier;
+        
+        // Vary height - can spawn at different elevations
+        const heightVariation = Math.random() * GAME_CONFIG.GROUND_OBSTACLE_HEIGHT_VARIATION;
+        const groundY = GAME_CONFIG.CANVAS_HEIGHT - 20;
+        const y = groundY - height - heightVariation;
+        
         return {
             type: 'chimney',
             x: GAME_CONFIG.CANVAS_WIDTH,
-            y: GAME_CONFIG.CANVAS_HEIGHT - GAME_CONFIG.CHIMNEY_HEIGHT - 20,
-            width: GAME_CONFIG.CHIMNEY_WIDTH,
-            height: GAME_CONFIG.CHIMNEY_HEIGHT
+            y: y,
+            width: width,
+            height: height,
+            sizeMultiplier: sizeMultiplier
         };
     }
     
     /**
-     * Create a snowman obstacle
+     * Create a snowman obstacle with random size and height
      */
     createSnowman() {
+        const sizeMultiplier = GAME_CONFIG.OBSTACLE_SIZE_MIN + 
+            Math.random() * (GAME_CONFIG.OBSTACLE_SIZE_MAX - GAME_CONFIG.OBSTACLE_SIZE_MIN);
+        const width = GAME_CONFIG.SNOWMAN_WIDTH * sizeMultiplier;
+        const height = GAME_CONFIG.SNOWMAN_HEIGHT * sizeMultiplier;
+        
+        // Vary height - can spawn at different elevations
+        const heightVariation = Math.random() * GAME_CONFIG.GROUND_OBSTACLE_HEIGHT_VARIATION;
+        const groundY = GAME_CONFIG.CANVAS_HEIGHT - 20;
+        const y = groundY - height - heightVariation;
+        
         return {
             type: 'snowman',
             x: GAME_CONFIG.CANVAS_WIDTH,
-            y: GAME_CONFIG.CANVAS_HEIGHT - GAME_CONFIG.SNOWMAN_HEIGHT - 20,
-            width: GAME_CONFIG.SNOWMAN_WIDTH,
-            height: GAME_CONFIG.SNOWMAN_HEIGHT
+            y: y,
+            width: width,
+            height: height,
+            sizeMultiplier: sizeMultiplier
         };
     }
     
     /**
-     * Create a tree obstacle
+     * Create a tree obstacle with random size and height
      */
     createTree() {
+        const sizeMultiplier = GAME_CONFIG.OBSTACLE_SIZE_MIN + 
+            Math.random() * (GAME_CONFIG.OBSTACLE_SIZE_MAX - GAME_CONFIG.OBSTACLE_SIZE_MIN);
+        const width = GAME_CONFIG.TREE_WIDTH * sizeMultiplier;
+        const height = GAME_CONFIG.TREE_HEIGHT * sizeMultiplier;
+        
+        // Vary height - can spawn at different elevations
+        const heightVariation = Math.random() * GAME_CONFIG.GROUND_OBSTACLE_HEIGHT_VARIATION;
+        const groundY = GAME_CONFIG.CANVAS_HEIGHT - 20;
+        const y = groundY - height - heightVariation;
+        
         return {
             type: 'tree',
             x: GAME_CONFIG.CANVAS_WIDTH,
-            y: GAME_CONFIG.CANVAS_HEIGHT - GAME_CONFIG.TREE_HEIGHT - 20,
-            width: GAME_CONFIG.TREE_WIDTH,
-            height: GAME_CONFIG.TREE_HEIGHT
+            y: y,
+            width: width,
+            height: height,
+            sizeMultiplier: sizeMultiplier
         };
     }
     
     /**
-     * Create a cloud obstacle (floating)
+     * Create a cloud obstacle (floating) with random size and height
      */
     createCloud() {
-        // Clouds spawn at random heights
+        const sizeMultiplier = GAME_CONFIG.OBSTACLE_SIZE_MIN + 
+            Math.random() * (GAME_CONFIG.OBSTACLE_SIZE_MAX - GAME_CONFIG.OBSTACLE_SIZE_MIN);
+        const width = GAME_CONFIG.CLOUD_WIDTH * sizeMultiplier;
+        const height = GAME_CONFIG.CLOUD_HEIGHT * sizeMultiplier;
+        
+        // Clouds spawn at random heights across the screen
         const minY = 50;
-        const maxY = GAME_CONFIG.CANVAS_HEIGHT - GAME_CONFIG.CLOUD_HEIGHT - 100;
+        const maxY = GAME_CONFIG.CANVAS_HEIGHT - height - 100;
         const y = Math.random() * (maxY - minY) + minY;
         
         return {
             type: 'cloud',
             x: GAME_CONFIG.CANVAS_WIDTH,
             y: y,
-            width: GAME_CONFIG.CLOUD_WIDTH,
-            height: GAME_CONFIG.CLOUD_HEIGHT
+            width: width,
+            height: height,
+            sizeMultiplier: sizeMultiplier
         };
     }
     
     /**
-     * Create a wind gust (invisible zone that pushes player)
+     * Create a wind gust (invisible zone that pushes player) with random size
      */
     createWindGust() {
+        const sizeMultiplier = GAME_CONFIG.OBSTACLE_SIZE_MIN + 
+            Math.random() * (GAME_CONFIG.OBSTACLE_SIZE_MAX - GAME_CONFIG.OBSTACLE_SIZE_MIN);
+        const width = 100 * sizeMultiplier;
+        const height = 150 * sizeMultiplier;
+        
         const minY = 100;
-        const maxY = GAME_CONFIG.CANVAS_HEIGHT - 200;
+        const maxY = GAME_CONFIG.CANVAS_HEIGHT - height - 50;
         const y = Math.random() * (maxY - minY) + minY;
         
         return {
             type: 'windGust',
             x: GAME_CONFIG.CANVAS_WIDTH,
             y: y,
-            width: 100,
-            height: 150,
+            width: width,
+            height: height,
             force: Math.random() > 0.5 ? -2 : 2, // Push up or down
-            particles: [] // For visual effect
+            particles: [], // For visual effect
+            sizeMultiplier: sizeMultiplier
         };
     }
     
@@ -224,116 +270,122 @@ class ObstacleManager {
     }
     
     /**
-     * Draw a chimney
+     * Draw a chimney (scaled to obstacle size)
      */
     drawChimney(ctx, obstacle) {
+        const scale = obstacle.sizeMultiplier || 1.0;
         ctx.fillStyle = GAME_CONFIG.COLORS.CHIMNEY;
         ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
         
-        // Chimney top
+        // Chimney top (scaled)
         ctx.fillStyle = '#1a1a1a';
-        ctx.fillRect(obstacle.x - 5, obstacle.y, obstacle.width + 10, 10);
+        ctx.fillRect(obstacle.x - 5 * scale, obstacle.y, obstacle.width + 10 * scale, 10 * scale);
         
-        // Smoke (optional)
+        // Smoke (scaled)
         ctx.fillStyle = 'rgba(200, 200, 200, 0.3)';
         ctx.beginPath();
-        ctx.arc(obstacle.x + obstacle.width / 2, obstacle.y - 10, 8, 0, Math.PI * 2);
+        ctx.arc(obstacle.x + obstacle.width / 2, obstacle.y - 10 * scale, 8 * scale, 0, Math.PI * 2);
         ctx.fill();
     }
     
     /**
-     * Draw a snowman
+     * Draw a snowman (scaled to obstacle size)
      */
     drawSnowman(ctx, obstacle) {
         const centerX = obstacle.x + obstacle.width / 2;
+        const scale = obstacle.sizeMultiplier || 1.0;
+        const baseY = obstacle.y + obstacle.height;
         
-        // Bottom snowball
+        // Bottom snowball (scaled)
         ctx.fillStyle = GAME_CONFIG.COLORS.SNOWMAN_BODY;
         ctx.beginPath();
-        ctx.arc(centerX, obstacle.y + obstacle.height - 20, 25, 0, Math.PI * 2);
+        ctx.arc(centerX, baseY - 20 * scale, 25 * scale, 0, Math.PI * 2);
         ctx.fill();
         
-        // Middle snowball
+        // Middle snowball (scaled)
         ctx.beginPath();
-        ctx.arc(centerX, obstacle.y + obstacle.height - 50, 20, 0, Math.PI * 2);
+        ctx.arc(centerX, baseY - 50 * scale, 20 * scale, 0, Math.PI * 2);
         ctx.fill();
         
-        // Top snowball
+        // Top snowball (scaled)
         ctx.beginPath();
-        ctx.arc(centerX, obstacle.y + obstacle.height - 70, 15, 0, Math.PI * 2);
+        ctx.arc(centerX, baseY - 70 * scale, 15 * scale, 0, Math.PI * 2);
         ctx.fill();
         
-        // Carrot nose
+        // Carrot nose (scaled)
         ctx.fillStyle = GAME_CONFIG.COLORS.SNOWMAN_NOSE;
         ctx.beginPath();
-        ctx.moveTo(centerX + 5, obstacle.y + obstacle.height - 70);
-        ctx.lineTo(centerX + 15, obstacle.y + obstacle.height - 70);
-        ctx.lineTo(centerX + 5, obstacle.y + obstacle.height - 65);
+        ctx.moveTo(centerX + 5 * scale, baseY - 70 * scale);
+        ctx.lineTo(centerX + 15 * scale, baseY - 70 * scale);
+        ctx.lineTo(centerX + 5 * scale, baseY - 65 * scale);
         ctx.fill();
         
-        // Eyes
+        // Eyes (scaled)
         ctx.fillStyle = '#000000';
         ctx.beginPath();
-        ctx.arc(centerX - 5, obstacle.y + obstacle.height - 72, 2, 0, Math.PI * 2);
-        ctx.arc(centerX + 5, obstacle.y + obstacle.height - 72, 2, 0, Math.PI * 2);
+        ctx.arc(centerX - 5 * scale, baseY - 72 * scale, 2 * scale, 0, Math.PI * 2);
+        ctx.arc(centerX + 5 * scale, baseY - 72 * scale, 2 * scale, 0, Math.PI * 2);
         ctx.fill();
     }
     
     /**
-     * Draw a tree
+     * Draw a tree (scaled to obstacle size)
      */
     drawTree(ctx, obstacle) {
         const centerX = obstacle.x + obstacle.width / 2;
+        const scale = obstacle.sizeMultiplier || 1.0;
+        const baseY = obstacle.y + obstacle.height;
         
-        // Trunk
+        // Trunk (scaled)
         ctx.fillStyle = GAME_CONFIG.COLORS.TREE_TRUNK;
-        ctx.fillRect(centerX - 5, obstacle.y + obstacle.height - 20, 10, 20);
+        ctx.fillRect(centerX - 5 * scale, baseY - 20 * scale, 10 * scale, 20 * scale);
         
-        // Tree layers (triangles)
+        // Tree layers (triangles) (scaled)
         ctx.fillStyle = GAME_CONFIG.COLORS.TREE;
         for (let i = 0; i < 3; i++) {
-            const y = obstacle.y + obstacle.height - 30 - (i * 25);
-            const width = 30 - (i * 5);
+            const y = baseY - 30 * scale - (i * 25 * scale);
+            const width = (30 - (i * 5)) * scale;
             ctx.beginPath();
             ctx.moveTo(centerX, y);
-            ctx.lineTo(centerX - width / 2, y + 20);
-            ctx.lineTo(centerX + width / 2, y + 20);
+            ctx.lineTo(centerX - width / 2, y + 20 * scale);
+            ctx.lineTo(centerX + width / 2, y + 20 * scale);
             ctx.closePath();
             ctx.fill();
         }
         
-        // Star on top
+        // Star on top (scaled)
         ctx.fillStyle = '#FFD700';
         ctx.beginPath();
-        ctx.moveTo(centerX, obstacle.y + 5);
-        ctx.lineTo(centerX - 3, obstacle.y + 10);
-        ctx.lineTo(centerX + 3, obstacle.y + 10);
+        ctx.moveTo(centerX, obstacle.y + 5 * scale);
+        ctx.lineTo(centerX - 3 * scale, obstacle.y + 10 * scale);
+        ctx.lineTo(centerX + 3 * scale, obstacle.y + 10 * scale);
         ctx.closePath();
         ctx.fill();
     }
     
     /**
-     * Draw a cloud
+     * Draw a cloud (scaled to obstacle size)
      */
     drawCloud(ctx, obstacle) {
         ctx.fillStyle = GAME_CONFIG.COLORS.CLOUD;
         const centerX = obstacle.x + obstacle.width / 2;
         const centerY = obstacle.y + obstacle.height / 2;
+        const scale = obstacle.sizeMultiplier || 1.0;
         
-        // Draw cloud as overlapping circles
+        // Draw cloud as overlapping circles (scaled)
         ctx.beginPath();
-        ctx.arc(centerX - 15, centerY, 15, 0, Math.PI * 2);
-        ctx.arc(centerX, centerY, 20, 0, Math.PI * 2);
-        ctx.arc(centerX + 15, centerY, 15, 0, Math.PI * 2);
-        ctx.arc(centerX - 5, centerY - 10, 12, 0, Math.PI * 2);
-        ctx.arc(centerX + 10, centerY - 10, 12, 0, Math.PI * 2);
+        ctx.arc(centerX - 15 * scale, centerY, 15 * scale, 0, Math.PI * 2);
+        ctx.arc(centerX, centerY, 20 * scale, 0, Math.PI * 2);
+        ctx.arc(centerX + 15 * scale, centerY, 15 * scale, 0, Math.PI * 2);
+        ctx.arc(centerX - 5 * scale, centerY - 10 * scale, 12 * scale, 0, Math.PI * 2);
+        ctx.arc(centerX + 10 * scale, centerY - 10 * scale, 12 * scale, 0, Math.PI * 2);
         ctx.fill();
         
-        // Add some sparkle for icy effect
+        // Add some sparkle for icy effect (scaled)
         ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
         ctx.beginPath();
-        ctx.arc(centerX - 10, centerY - 5, 3, 0, Math.PI * 2);
-        ctx.arc(centerX + 10, centerY, 3, 0, Math.PI * 2);
+        ctx.arc(centerX - 10 * scale, centerY - 5 * scale, 3 * scale, 0, Math.PI * 2);
+        ctx.arc(centerX + 10 * scale, centerY, 3 * scale, 0, Math.PI * 2);
         ctx.fill();
     }
     

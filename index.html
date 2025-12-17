@@ -17,6 +17,7 @@
             <p>Press E to use ability | ←/→ to choose routes</p>
             <p>Pilot your sleigh smoothly and avoid obstacles!</p>
             <button id="startButton" class="button">Start Game</button>
+            <button id="achievementsButton" class="button secondary">🏆 Achievements</button>
         </div>
 
         <!-- Pause Screen -->
@@ -24,6 +25,7 @@
             <h1>⏸ Paused</h1>
             <button id="resumeButton" class="button">Resume</button>
             <button id="restartButton" class="button">Restart</button>
+            <button id="achievementsButtonPause" class="button secondary">🏆 Achievements</button>
         </div>
 
         <!-- Game Over Screen -->
@@ -33,6 +35,23 @@
             <p>High Score: <span id="highScore">0</span></p>
             <div id="goalsDisplay" style="margin: 20px 0; text-align: left; max-height: 200px; overflow-y: auto;"></div>
             <button id="playAgainButton" class="button">Play Again</button>
+            <button id="achievementsButtonGameOver" class="button secondary">🏆 Achievements</button>
+        </div>
+
+        <!-- Achievements Screen -->
+        <div id="achievementsScreen" class="screen hidden achievements-screen">
+            <h1>🏆 Achievements</h1>
+            <div id="achievementsContent">
+                <div class="achievements-section">
+                    <h2>Goals</h2>
+                    <div id="achievementsGoalsList" class="achievements-list"></div>
+                </div>
+                <div class="achievements-section">
+                    <h2>Unlocked Items</h2>
+                    <div id="achievementsUnlockedList" class="achievements-list"></div>
+                </div>
+            </div>
+            <button id="closeAchievementsButton" class="button">Close</button>
         </div>
 
         <!-- HUD -->

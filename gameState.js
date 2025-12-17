@@ -44,10 +44,30 @@ class GameState {
             this.restartGame();
         });
         
+        // Achievements buttons
+        document.getElementById('achievementsButton').addEventListener('click', () => {
+            this.showAchievements();
+        });
+        
+        document.getElementById('achievementsButtonPause').addEventListener('click', () => {
+            this.showAchievements();
+        });
+        
+        document.getElementById('achievementsButtonGameOver').addEventListener('click', () => {
+            this.showAchievements();
+        });
+        
+        document.getElementById('closeAchievementsButton').addEventListener('click', () => {
+            this.hideAchievements();
+        });
+        
         // Pause on Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.currentState === GAME_STATES.PLAYING) {
                 this.pauseGame();
+            } else if (e.key === 'Escape' && document.getElementById('achievementsScreen') && 
+                      !document.getElementById('achievementsScreen').classList.contains('hidden')) {
+                this.hideAchievements();
             }
         });
     }
@@ -192,16 +212,150 @@ class GameState {
     }
     
     /**
+     * Show achievements screen
+     */
+    showAchievements() {
+        document.getElementById('achievementsScreen').classList.remove('hidden');
+        this.updateAchievementsDisplay();
+    }
+    
+    /**
+     * Hide achievements screen
+     */
+    hideAchievements() {
+        document.getElementById('achievementsScreen').classList.add('hidden');
+    }
+    
+    /**
+     * Update achievements display
+     */
+    updateAchievementsDisplay() {
+        if (!window.gameInstance || !window.gameInstance.goalsManager) return;
+        
+        const goalsManager = window.gameInstance.goalsManager;
+        const goals = goalsManager.getGoalProgress();
+        const unlocked = goalsManager.unlocked;
+        
+        // Update goals list
+        const goalsList = document.getElementById('achievementsGoalsList');
+        goalsList.innerHTML = '';
+        
+        goals.forEach(goal => {
+            const item = document.createElement('div');
+            item.className = `achievement-item ${goal.completed ? 'completed' : ''}`;
+            
+            const progressPercent = Math.min((goal.progress / goal.target) * 100, 100);
+            
+            item.innerHTML = `
+                <div class="achievement-name">
+                    ${goal.completed ? '✓' : '○'} ${goal.name}
+                </div>
+                <div class="achievement-progress">
+                    ${goal.progress} / ${goal.target}
+                </div>
+                <div class="achievement-progress-bar">
+                    <div class="achievement-progress-fill" style="width: ${progressPercent}%"></div>
+                </div>
+            `;
+            
+            goalsList.appendChild(item);
+        });
+        
+        // Update unlockables list
+        const unlockedList = document.getElementById('achievementsUnlockedList');
+        unlockedList.innerHTML = '';
+        
+        // Sleigh Colors
+        const sleighColors = ['default', 'gold', 'silver', 'green'];
+        sleighColors.forEach(color => {
+            const isUnlocked = unlocked.sleighColors.includes(color);
+            const item = document.createElement('div');
+            item.className = `unlockable-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+            
+            const colorNames = {
+                'default': '🎅 Default Sleigh',
+                'gold': '✨ Gold Sleigh',
+                'silver': '💎 Silver Sleigh',
+                'green': '🎄 Green Sleigh'
+            };
+            
+            item.innerHTML = `
+                <span class="unlockable-icon">${isUnlocked ? '🎁' : '🔒'}</span>
+                <span class="unlockable-name">${colorNames[color]}</span>
+                <span class="unlockable-status ${isUnlocked ? 'unlocked' : 'locked'}">
+                    ${isUnlocked ? 'Unlocked' : 'Locked'}
+                </span>
+            `;
+            
+            unlockedList.appendChild(item);
+        });
+        
+        // Santa Hats
+        const santaHats = ['default', 'elf', 'reindeer'];
+        santaHats.forEach(hat => {
+            const isUnlocked = unlocked.santaHats.includes(hat);
+            const item = document.createElement('div');
+            item.className = `unlockable-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+            
+            const hatNames = {
+                'default': '🎅 Default Hat',
+                'elf': '🧝 Elf Hat',
+                'reindeer': '🦌 Reindeer Hat'
+            };
+            
+            item.innerHTML = `
+                <span class="unlockable-icon">${isUnlocked ? '🎁' : '🔒'}</span>
+                <span class="unlockable-name">${hatNames[hat]}</span>
+                <span class="unlockable-status ${isUnlocked ? 'unlocked' : 'locked'}">
+                    ${isUnlocked ? 'Unlocked' : 'Locked'}
+                </span>
+            `;
+            
+            unlockedList.appendChild(item);
+        });
+        
+        // Backgrounds
+        const backgrounds = ['default', 'night', 'aurora'];
+        backgrounds.forEach(bg => {
+            const isUnlocked = unlocked.backgrounds.includes(bg);
+            const item = document.createElement('div');
+            item.className = `unlockable-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+            
+            const bgNames = {
+                'default': '☀️ Default Background',
+                'night': '🌙 Night Background',
+                'aurora': '🌌 Aurora Background'
+            };
+            
+            item.innerHTML = `
+                <span class="unlockable-icon">${isUnlocked ? '🎁' : '🔒'}</span>
+                <span class="unlockable-name">${bgNames[bg]}</span>
+                <span class="unlockable-status ${isUnlocked ? 'unlocked' : 'locked'}">
+                    ${isUnlocked ? 'Unlocked' : 'Locked'}
+                </span>
+            `;
+            
+            unlockedList.appendChild(item);
+        });
+    }
+    
+    /**
      * Update UI based on current state
      */
     updateUI() {
-        // Show/hide screens
-        document.getElementById('startScreen').classList.toggle('hidden', 
-            this.currentState !== GAME_STATES.START);
-        document.getElementById('pauseScreen').classList.toggle('hidden', 
-            this.currentState !== GAME_STATES.PAUSED);
-        document.getElementById('gameOverScreen').classList.toggle('hidden', 
-            this.currentState !== GAME_STATES.GAME_OVER);
+        // Show/hide screens (but not achievements screen - it's handled separately)
+        const achievementsScreen = document.getElementById('achievementsScreen');
+        const isAchievementsVisible = achievementsScreen && !achievementsScreen.classList.contains('hidden');
+        
+        if (!isAchievementsVisible) {
+            document.getElementById('startScreen').classList.toggle('hidden', 
+                this.currentState !== GAME_STATES.START);
+            document.getElementById('pauseScreen').classList.toggle('hidden', 
+                this.currentState !== GAME_STATES.PAUSED);
+            document.getElementById('gameOverScreen').classList.toggle('hidden', 
+                this.currentState !== GAME_STATES.GAME_OVER);
+        }
+        
         document.getElementById('hud').classList.toggle('hidden', 
             this.currentState !== GAME_STATES.PLAYING);
         
