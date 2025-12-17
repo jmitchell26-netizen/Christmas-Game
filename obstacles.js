@@ -124,7 +124,28 @@ class ObstacleManager {
     }
     
     /**
-     * Create a chimney obstacle with random size and height
+     * Get random horizontal spawn position
+     */
+    getRandomSpawnX() {
+        // Spawn at different horizontal positions
+        const baseX = GAME_CONFIG.CANVAS_WIDTH;
+        const variation = (Math.random() - 0.5) * GAME_CONFIG.OBSTACLE_HORIZONTAL_VARIATION;
+        return baseX + variation;
+    }
+    
+    /**
+     * Get random lane position (for obstacles that can spawn in lanes)
+     */
+    getRandomLaneX() {
+        const lane = Math.floor(Math.random() * GAME_CONFIG.OBSTACLE_LANE_COUNT);
+        const laneWidth = GAME_CONFIG.CANVAS_WIDTH / GAME_CONFIG.OBSTACLE_LANE_COUNT;
+        const laneCenter = (lane + 0.5) * laneWidth;
+        const variation = (Math.random() - 0.5) * laneWidth * 0.6; // 60% of lane width variation
+        return laneCenter + variation;
+    }
+    
+    /**
+     * Create a chimney obstacle with random size, height, and position
      */
     createChimney() {
         const sizeMultiplier = GAME_CONFIG.OBSTACLE_SIZE_MIN + 
@@ -132,23 +153,38 @@ class ObstacleManager {
         const width = GAME_CONFIG.CHIMNEY_WIDTH * sizeMultiplier;
         const height = GAME_CONFIG.CHIMNEY_HEIGHT * sizeMultiplier;
         
-        // Vary height - can spawn at different elevations
-        const heightVariation = Math.random() * GAME_CONFIG.GROUND_OBSTACLE_HEIGHT_VARIATION;
-        const groundY = GAME_CONFIG.CANVAS_HEIGHT - 20;
-        const y = groundY - height - heightVariation;
+        // 20% chance to spawn floating in air, otherwise on ground
+        const spawnFloating = Math.random() < 0.2;
+        let y;
+        
+        if (spawnFloating) {
+            // Spawn floating in mid-air
+            const minY = 100;
+            const maxY = GAME_CONFIG.CANVAS_HEIGHT - height - 150;
+            y = Math.random() * (maxY - minY) + minY;
+        } else {
+            // Spawn on ground with height variation
+            const heightVariation = Math.random() * GAME_CONFIG.GROUND_OBSTACLE_HEIGHT_VARIATION;
+            const groundY = GAME_CONFIG.CANVAS_HEIGHT - 20;
+            y = groundY - height - heightVariation;
+        }
+        
+        // Vary horizontal position - can spawn in different lanes
+        const x = this.getRandomSpawnX();
         
         return {
             type: 'chimney',
-            x: GAME_CONFIG.CANVAS_WIDTH,
+            x: x,
             y: y,
             width: width,
             height: height,
-            sizeMultiplier: sizeMultiplier
+            sizeMultiplier: sizeMultiplier,
+            floating: spawnFloating
         };
     }
     
     /**
-     * Create a snowman obstacle with random size and height
+     * Create a snowman obstacle with random size, height, and position
      */
     createSnowman() {
         const sizeMultiplier = GAME_CONFIG.OBSTACLE_SIZE_MIN + 
@@ -156,23 +192,38 @@ class ObstacleManager {
         const width = GAME_CONFIG.SNOWMAN_WIDTH * sizeMultiplier;
         const height = GAME_CONFIG.SNOWMAN_HEIGHT * sizeMultiplier;
         
-        // Vary height - can spawn at different elevations
-        const heightVariation = Math.random() * GAME_CONFIG.GROUND_OBSTACLE_HEIGHT_VARIATION;
-        const groundY = GAME_CONFIG.CANVAS_HEIGHT - 20;
-        const y = groundY - height - heightVariation;
+        // 15% chance to spawn floating in air, otherwise on ground
+        const spawnFloating = Math.random() < 0.15;
+        let y;
+        
+        if (spawnFloating) {
+            // Spawn floating in mid-air
+            const minY = 100;
+            const maxY = GAME_CONFIG.CANVAS_HEIGHT - height - 150;
+            y = Math.random() * (maxY - minY) + minY;
+        } else {
+            // Spawn on ground with height variation
+            const heightVariation = Math.random() * GAME_CONFIG.GROUND_OBSTACLE_HEIGHT_VARIATION;
+            const groundY = GAME_CONFIG.CANVAS_HEIGHT - 20;
+            y = groundY - height - heightVariation;
+        }
+        
+        // Vary horizontal position - can spawn in different lanes
+        const x = this.getRandomSpawnX();
         
         return {
             type: 'snowman',
-            x: GAME_CONFIG.CANVAS_WIDTH,
+            x: x,
             y: y,
             width: width,
             height: height,
-            sizeMultiplier: sizeMultiplier
+            sizeMultiplier: sizeMultiplier,
+            floating: spawnFloating
         };
     }
     
     /**
-     * Create a tree obstacle with random size and height
+     * Create a tree obstacle with random size, height, and position
      */
     createTree() {
         const sizeMultiplier = GAME_CONFIG.OBSTACLE_SIZE_MIN + 
@@ -180,23 +231,38 @@ class ObstacleManager {
         const width = GAME_CONFIG.TREE_WIDTH * sizeMultiplier;
         const height = GAME_CONFIG.TREE_HEIGHT * sizeMultiplier;
         
-        // Vary height - can spawn at different elevations
-        const heightVariation = Math.random() * GAME_CONFIG.GROUND_OBSTACLE_HEIGHT_VARIATION;
-        const groundY = GAME_CONFIG.CANVAS_HEIGHT - 20;
-        const y = groundY - height - heightVariation;
+        // 10% chance to spawn floating in air, otherwise on ground
+        const spawnFloating = Math.random() < 0.1;
+        let y;
+        
+        if (spawnFloating) {
+            // Spawn floating in mid-air
+            const minY = 100;
+            const maxY = GAME_CONFIG.CANVAS_HEIGHT - height - 150;
+            y = Math.random() * (maxY - minY) + minY;
+        } else {
+            // Spawn on ground with height variation
+            const heightVariation = Math.random() * GAME_CONFIG.GROUND_OBSTACLE_HEIGHT_VARIATION;
+            const groundY = GAME_CONFIG.CANVAS_HEIGHT - 20;
+            y = groundY - height - heightVariation;
+        }
+        
+        // Vary horizontal position - can spawn in different lanes
+        const x = this.getRandomSpawnX();
         
         return {
             type: 'tree',
-            x: GAME_CONFIG.CANVAS_WIDTH,
+            x: x,
             y: y,
             width: width,
             height: height,
-            sizeMultiplier: sizeMultiplier
+            sizeMultiplier: sizeMultiplier,
+            floating: spawnFloating
         };
     }
     
     /**
-     * Create a cloud obstacle (floating) with random size and height
+     * Create a cloud obstacle (floating) with random size, height, and position
      */
     createCloud() {
         const sizeMultiplier = GAME_CONFIG.OBSTACLE_SIZE_MIN + 
@@ -209,9 +275,12 @@ class ObstacleManager {
         const maxY = GAME_CONFIG.CANVAS_HEIGHT - height - 100;
         const y = Math.random() * (maxY - minY) + minY;
         
+        // Vary horizontal position - clouds can spawn anywhere horizontally
+        const x = this.getRandomSpawnX();
+        
         return {
             type: 'cloud',
-            x: GAME_CONFIG.CANVAS_WIDTH,
+            x: x,
             y: y,
             width: width,
             height: height,
@@ -220,7 +289,7 @@ class ObstacleManager {
     }
     
     /**
-     * Create a wind gust (invisible zone that pushes player) with random size
+     * Create a wind gust (invisible zone that pushes player) with random size and position
      */
     createWindGust() {
         const sizeMultiplier = GAME_CONFIG.OBSTACLE_SIZE_MIN + 
@@ -232,9 +301,12 @@ class ObstacleManager {
         const maxY = GAME_CONFIG.CANVAS_HEIGHT - height - 50;
         const y = Math.random() * (maxY - minY) + minY;
         
+        // Vary horizontal position - wind gusts can spawn in different lanes
+        const x = this.getRandomSpawnX();
+        
         return {
             type: 'windGust',
-            x: GAME_CONFIG.CANVAS_WIDTH,
+            x: x,
             y: y,
             width: width,
             height: height,

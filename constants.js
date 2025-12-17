@@ -35,6 +35,10 @@ const GAME_CONFIG = {
     // Height variation for ground obstacles (offset from ground)
     GROUND_OBSTACLE_HEIGHT_VARIATION: 100, // Can spawn up to 100px above ground
     
+    // Horizontal position variation
+    OBSTACLE_HORIZONTAL_VARIATION: 200, // Can spawn up to 200px ahead/behind normal position
+    OBSTACLE_LANE_COUNT: 3, // Number of horizontal lanes (left, center, right)
+    
     // Collectible settings
     GIFT_SPAWN_RATE: 0.01,
     GIFT_MIN_SPAWN_INTERVAL: 120,

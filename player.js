@@ -134,9 +134,84 @@ class Player {
     }
     
     /**
+     * Get sleigh color based on equipped item
+     */
+    getSleighColor(sleighColor) {
+        const colors = {
+            'default': GAME_CONFIG.COLORS.PLAYER_SLEIGH,
+            'gold': '#FFD700',
+            'silver': '#C0C0C0',
+            'green': '#228B22'
+        };
+        return colors[sleighColor] || colors['default'];
+    }
+    
+    /**
+     * Draw hat based on equipped item
+     */
+    drawHat(ctx, hatType, headX, headY) {
+        switch (hatType) {
+            case 'elf':
+                // Pointed elf hat
+                ctx.fillStyle = '#228B22';
+                ctx.beginPath();
+                ctx.moveTo(headX - 8, headY);
+                ctx.lineTo(headX, headY - 10);
+                ctx.lineTo(headX + 8, headY);
+                ctx.closePath();
+                ctx.fill();
+                // Bell
+                ctx.fillStyle = '#FFD700';
+                ctx.beginPath();
+                ctx.arc(headX, headY - 10, 2, 0, Math.PI * 2);
+                ctx.fill();
+                break;
+            case 'reindeer':
+                // Antlers first (behind hat)
+                ctx.strokeStyle = '#8B4513';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(headX - 5, headY - 2);
+                ctx.lineTo(headX - 8, headY - 8);
+                ctx.moveTo(headX + 5, headY - 2);
+                ctx.lineTo(headX + 8, headY - 8);
+                ctx.stroke();
+                // Hat with antlers
+                ctx.fillStyle = '#DC143C';
+                ctx.beginPath();
+                ctx.moveTo(headX - 8, headY);
+                ctx.lineTo(headX, headY - 2);
+                ctx.lineTo(headX + 8, headY);
+                ctx.closePath();
+                ctx.fill();
+                // Hat pom-pom
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.arc(headX, headY - 2, 2, 0, Math.PI * 2);
+                ctx.fill();
+                break;
+            default:
+                // Default Santa hat
+                ctx.fillStyle = '#DC143C';
+                ctx.beginPath();
+                ctx.moveTo(headX - 8, headY);
+                ctx.lineTo(headX, headY - 2);
+                ctx.lineTo(headX + 8, headY);
+                ctx.closePath();
+                ctx.fill();
+                // Hat pom-pom
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.arc(headX, headY - 2, 3, 0, Math.PI * 2);
+                ctx.fill();
+                break;
+        }
+    }
+    
+    /**
      * Draw the player (Santa on sleigh) with animations
      */
-    draw(ctx, isDashing = false) {
+    draw(ctx, isDashing = false, sleighColor = 'default', hatType = 'default') {
         ctx.save();
         
         const centerX = this.x + this.width / 2;
@@ -152,8 +227,8 @@ class Player {
             this.drawBoostTrail(ctx);
         }
         
-        // Sleigh base
-        ctx.fillStyle = GAME_CONFIG.COLORS.PLAYER_SLEIGH;
+        // Sleigh base (with equipped color)
+        ctx.fillStyle = this.getSleighColor(sleighColor);
         ctx.beginPath();
         ctx.ellipse(centerX, this.y + this.height - 10, 
                     this.width / 2, 8, 0, 0, Math.PI * 2);
@@ -177,19 +252,8 @@ class Player {
         ctx.arc(this.x + 30, this.y + 8, 8, 0, Math.PI * 2);
         ctx.fill();
         
-        // Santa hat
-        ctx.fillStyle = '#DC143C';
-        ctx.beginPath();
-        ctx.moveTo(this.x + 22, this.y + 8);
-        ctx.lineTo(this.x + 30, this.y - 2);
-        ctx.lineTo(this.x + 38, this.y + 8);
-        ctx.fill();
-        
-        // Hat pom-pom
-        ctx.fillStyle = '#FFFFFF';
-        ctx.beginPath();
-        ctx.arc(this.x + 30, this.y - 2, 3, 0, Math.PI * 2);
-        ctx.fill();
+        // Santa hat (with equipped type)
+        this.drawHat(ctx, hatType, this.x + 30, this.y + 8);
         
         // Gift bag (optional detail)
         ctx.fillStyle = '#228B22';

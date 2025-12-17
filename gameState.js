@@ -269,8 +269,18 @@ class GameState {
         const sleighColors = ['default', 'gold', 'silver', 'green'];
         sleighColors.forEach(color => {
             const isUnlocked = unlocked.sleighColors.includes(color);
+            const isEquipped = goalsManager.getEquipped('sleighColors') === color;
             const item = document.createElement('div');
-            item.className = `unlockable-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+            item.className = `unlockable-item ${isUnlocked ? 'unlocked' : 'locked'} ${isEquipped ? 'equipped' : ''}`;
+            
+            if (isUnlocked) {
+                item.style.cursor = 'pointer';
+                item.addEventListener('click', () => {
+                    if (goalsManager.equip('sleighColors', color)) {
+                        this.updateAchievementsDisplay();
+                    }
+                });
+            }
             
             const colorNames = {
                 'default': '🎅 Default Sleigh',
@@ -283,7 +293,7 @@ class GameState {
                 <span class="unlockable-icon">${isUnlocked ? '🎁' : '🔒'}</span>
                 <span class="unlockable-name">${colorNames[color]}</span>
                 <span class="unlockable-status ${isUnlocked ? 'unlocked' : 'locked'}">
-                    ${isUnlocked ? 'Unlocked' : 'Locked'}
+                    ${isEquipped ? '✓ Equipped' : isUnlocked ? 'Click to Equip' : 'Locked'}
                 </span>
             `;
             
@@ -294,8 +304,18 @@ class GameState {
         const santaHats = ['default', 'elf', 'reindeer'];
         santaHats.forEach(hat => {
             const isUnlocked = unlocked.santaHats.includes(hat);
+            const isEquipped = goalsManager.getEquipped('santaHats') === hat;
             const item = document.createElement('div');
-            item.className = `unlockable-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+            item.className = `unlockable-item ${isUnlocked ? 'unlocked' : 'locked'} ${isEquipped ? 'equipped' : ''}`;
+            
+            if (isUnlocked) {
+                item.style.cursor = 'pointer';
+                item.addEventListener('click', () => {
+                    if (goalsManager.equip('santaHats', hat)) {
+                        this.updateAchievementsDisplay();
+                    }
+                });
+            }
             
             const hatNames = {
                 'default': '🎅 Default Hat',
@@ -307,7 +327,7 @@ class GameState {
                 <span class="unlockable-icon">${isUnlocked ? '🎁' : '🔒'}</span>
                 <span class="unlockable-name">${hatNames[hat]}</span>
                 <span class="unlockable-status ${isUnlocked ? 'unlocked' : 'locked'}">
-                    ${isUnlocked ? 'Unlocked' : 'Locked'}
+                    ${isEquipped ? '✓ Equipped' : isUnlocked ? 'Click to Equip' : 'Locked'}
                 </span>
             `;
             
@@ -318,8 +338,18 @@ class GameState {
         const backgrounds = ['default', 'night', 'aurora'];
         backgrounds.forEach(bg => {
             const isUnlocked = unlocked.backgrounds.includes(bg);
+            const isEquipped = goalsManager.getEquipped('backgrounds') === bg;
             const item = document.createElement('div');
-            item.className = `unlockable-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+            item.className = `unlockable-item ${isUnlocked ? 'unlocked' : 'locked'} ${isEquipped ? 'equipped' : ''}`;
+            
+            if (isUnlocked) {
+                item.style.cursor = 'pointer';
+                item.addEventListener('click', () => {
+                    if (goalsManager.equip('backgrounds', bg)) {
+                        this.updateAchievementsDisplay();
+                    }
+                });
+            }
             
             const bgNames = {
                 'default': '☀️ Default Background',
@@ -331,7 +361,7 @@ class GameState {
                 <span class="unlockable-icon">${isUnlocked ? '🎁' : '🔒'}</span>
                 <span class="unlockable-name">${bgNames[bg]}</span>
                 <span class="unlockable-status ${isUnlocked ? 'unlocked' : 'locked'}">
-                    ${isUnlocked ? 'Unlocked' : 'Locked'}
+                    ${isEquipped ? '✓ Equipped' : isUnlocked ? 'Click to Equip' : 'Locked'}
                 </span>
             `;
             

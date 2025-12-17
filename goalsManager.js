@@ -21,7 +21,15 @@ class GoalsManager {
             backgrounds: ['default']
         };
         
+        // Currently equipped items
+        this.equipped = {
+            sleighColor: 'default',
+            santaHat: 'default',
+            background: 'default'
+        };
+        
         this.loadProgress();
+        this.loadEquipped();
     }
     
     /**
@@ -93,6 +101,29 @@ class GoalsManager {
     }
     
     /**
+     * Equip an item
+     */
+    equip(category, item) {
+        // Verify item is unlocked
+        if (this.unlocked[category].includes(item)) {
+            this.equipped[category === 'sleighColors' ? 'sleighColor' : 
+                         category === 'santaHats' ? 'santaHat' : 'background'] = item;
+            this.saveEquipped();
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Get currently equipped item for a category
+     */
+    getEquipped(category) {
+        const key = category === 'sleighColors' ? 'sleighColor' : 
+                   category === 'santaHats' ? 'santaHat' : 'background';
+        return this.equipped[key];
+    }
+    
+    /**
      * Save progress to localStorage
      */
     saveProgress() {
@@ -114,6 +145,38 @@ class GoalsManager {
                 this.unlocked = data.unlocked || this.unlocked;
             } catch (e) {
                 console.error('Failed to load goals:', e);
+            }
+        }
+    }
+    
+    /**
+     * Save equipped items to localStorage
+     */
+    saveEquipped() {
+        localStorage.setItem('santaEquipped', JSON.stringify(this.equipped));
+    }
+    
+    /**
+     * Load equipped items from localStorage
+     */
+    loadEquipped() {
+        const saved = localStorage.getItem('santaEquipped');
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                this.equipped = { ...this.equipped, ...data };
+                // Verify equipped items are still unlocked
+                if (!this.unlocked.sleighColors.includes(this.equipped.sleighColor)) {
+                    this.equipped.sleighColor = 'default';
+                }
+                if (!this.unlocked.santaHats.includes(this.equipped.santaHat)) {
+                    this.equipped.santaHat = 'default';
+                }
+                if (!this.unlocked.backgrounds.includes(this.equipped.background)) {
+                    this.equipped.background = 'default';
+                }
+            } catch (e) {
+                console.error('Failed to load equipped items:', e);
             }
         }
     }

@@ -283,9 +283,11 @@ class Game {
             // Draw obstacles
             this.obstacleManager.draw(this.ctx);
             
-            // Draw player
+            // Draw player (with equipped items)
             const isDashing = this.abilityManager.isActive && this.abilityManager.abilityType === 'dash';
-            this.player.draw(this.ctx, isDashing);
+            const sleighColor = this.goalsManager.equipped.sleighColor;
+            const hatType = this.goalsManager.equipped.santaHat;
+            this.player.draw(this.ctx, isDashing, sleighColor, hatType);
             
             // Draw shield effect if active
             const hasShield = this.gameState.hasShield() || 
@@ -344,15 +346,52 @@ class Game {
     }
     
     /**
-     * Draw background gradient
+     * Draw background gradient (with equipped background)
      */
     drawBackground() {
-        const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-        gradient.addColorStop(0, GAME_CONFIG.COLORS.SKY_TOP);
-        gradient.addColorStop(0.5, GAME_CONFIG.COLORS.SKY_MID);
-        gradient.addColorStop(1, GAME_CONFIG.COLORS.SKY_BOTTOM);
-        this.ctx.fillStyle = gradient;
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        const backgroundType = this.goalsManager.equipped.background;
+        
+        if (backgroundType === 'night') {
+            // Night background
+            const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+            gradient.addColorStop(0, '#1a1a2e');
+            gradient.addColorStop(0.5, '#16213e');
+            gradient.addColorStop(1, '#0f3460');
+            this.ctx.fillStyle = gradient;
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            
+            // Stars
+            this.ctx.fillStyle = '#FFFFFF';
+            for (let i = 0; i < 50; i++) {
+                const x = (i * 37) % this.canvas.width;
+                const y = (i * 23) % (this.canvas.height * 0.7);
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, 1, 0, Math.PI * 2);
+                this.ctx.fill();
+            }
+        } else if (backgroundType === 'aurora') {
+            // Aurora background
+            const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+            gradient.addColorStop(0, '#0a0e27');
+            gradient.addColorStop(0.3, '#1a1f3a');
+            gradient.addColorStop(0.6, '#2d1b4e');
+            gradient.addColorStop(1, '#1a1f3a');
+            this.ctx.fillStyle = gradient;
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            
+            // Aurora effect
+            const time = Date.now() / 2000;
+            this.ctx.fillStyle = `rgba(0, 255, 200, ${0.3 + Math.sin(time) * 0.2})`;
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height * 0.4);
+        } else {
+            // Default background
+            const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+            gradient.addColorStop(0, GAME_CONFIG.COLORS.SKY_TOP);
+            gradient.addColorStop(0.5, GAME_CONFIG.COLORS.SKY_MID);
+            gradient.addColorStop(1, GAME_CONFIG.COLORS.SKY_BOTTOM);
+            this.ctx.fillStyle = gradient;
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        }
     }
     
     /**
